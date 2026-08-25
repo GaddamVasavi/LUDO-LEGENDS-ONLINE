@@ -1,0 +1,41 @@
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(108, 92, 231, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(108, 92, 231, 0.9);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes roll-dice-3d {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+  }
+  50% {
+    transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg) scale(1.3);
+  }
+  100% {
+    transform: rotateX(1080deg) rotateY(720deg) rotateZ(360deg) scale(1);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-dice-roll {
+  animation: roll-dice-3d 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
