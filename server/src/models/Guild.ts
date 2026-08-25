@@ -9,7 +9,7 @@ export interface IGuild extends Document {
   level: number;
   xp: number;
   trophies: number;
-  leaderUserId: mongoose.Types.ObjectId;
+  leaderUserId: string;
   members: any[];
   maxMembers: number;
   isPublic: boolean;
@@ -26,7 +26,7 @@ const GuildSchema = new Schema<IGuild>(
     level: { type: Number, default: 1 },
     xp: { type: Number, default: 0 },
     trophies: { type: Number, default: 0 },
-    leaderUserId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    leaderUserId: { type: Schema.Types.Mixed, required: true },
     members: [{ type: Schema.Types.Mixed }],
     maxMembers: { type: Number, default: 30 },
     isPublic: { type: Boolean, default: true },

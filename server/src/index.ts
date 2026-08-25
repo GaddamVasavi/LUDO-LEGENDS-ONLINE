@@ -1,11 +1,11 @@
 import http from 'http';
 import { Server } from 'socket.io';
-import { createApp } from './app.js';
-import { env } from './config/env.js';
-import { connectDatabase } from './config/database.js';
-import { connectRedis } from './config/redis.js';
-import { setupSocketServer } from './socket/socketManager.js';
-import { logger } from './utils/logger.js';
+import { createApp } from './app';
+import { env } from './config/env';
+import { connectDatabase } from './config/database';
+import { connectRedis } from './config/redis';
+import { setupSocketServer } from './socket/socketManager';
+import { logger } from './utils/logger';
 
 async function startServer() {
   await connectDatabase();

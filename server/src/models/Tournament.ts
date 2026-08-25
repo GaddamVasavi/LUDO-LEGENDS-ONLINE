@@ -32,7 +32,7 @@ const TournamentSchema = new Schema<ITournament>(
     currentRound: { type: Number, default: 1 },
     totalRounds: { type: Number, default: 4 },
     startTime: { type: Date, required: true },
-    winnerId: { type: Schema.Types.ObjectId, ref: 'User' },
+    winnerId: { type: Schema.Types.Mixed },
   },
   { timestamps: true }
 );

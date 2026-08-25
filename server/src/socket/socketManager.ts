@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
-import { registerGameHandlers } from './gameHandlers.js';
-import { registerChatHandlers } from './chatHandlers.js';
-import { logger } from '../utils/logger.js';
+import { registerGameHandlers } from './gameHandlers';
+import { registerChatHandlers } from './chatHandlers';
+import { logger } from '../utils/logger';
 
 export function setupSocketServer(io: Server): void {
   io.on('connection', (socket: Socket) => {

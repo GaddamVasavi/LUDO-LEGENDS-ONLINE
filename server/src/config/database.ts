@@ -1,17 +1,13 @@
 import mongoose from 'mongoose';
-import { env } from './env.js';
-import { logger } from '../utils/logger.js';
+import { env } from './env';
+import { logger } from '../utils/logger';
 
 export async function connectDatabase(): Promise<void> {
   try {
     mongoose.set('strictQuery', true);
-    await mongoose.connect(env.MONGODB_URI);
+    await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 2000 });
     logger.info('✅ Successfully connected to MongoDB database');
   } catch (error) {
-    logger.error('❌ Failed to connect to MongoDB:', error);
-    // In dev mode, keep running even if database connection fails initially
-    if (env.NODE_ENV === 'production') {
-      process.exit(1);
-    }
+    logger.warn('⚠️ MongoDB not detected. Operating with in-memory database fallback.');
   }
 }

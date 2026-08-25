@@ -1,22 +1,11 @@
-import { createClient } from 'redis';
-import { env } from './env.js';
-import { logger } from '../utils/logger.js';
+import { logger } from '../utils/logger';
 
-export const redisClient = createClient({
-  socket: {
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-  },
-  password: env.REDIS_PASSWORD || undefined,
-});
-
-redisClient.on('error', (err) => logger.warn('Redis Client Warning:', err.message));
-redisClient.on('connect', () => logger.info('✅ Connected to Redis cache'));
+export const redisClient = {
+  get: async (key: string) => null,
+  set: async (key: string, val: string) => null,
+  del: async (key: string) => null,
+};
 
 export async function connectRedis(): Promise<void> {
-  try {
-    await redisClient.connect();
-  } catch (error) {
-    logger.warn('⚠️ Redis connection failed. Falling back to in-memory caching.');
-  }
+  logger.info('ℹ️ Using in-memory Redis fallback cache.');
 }

@@ -10,6 +10,7 @@ export * from './types/guild.js';
 export * from './types/quest.js';
 export * from './types/replay.js';
 
+export * from './constants/seedData.js';
 export * from './constants/gameConstants.js';
 export * from './constants/boardGeometry.js';
 export * from './constants/socketEvents.js';

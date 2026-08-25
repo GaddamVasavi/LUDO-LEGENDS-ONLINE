@@ -1,5 +1,5 @@
-import { QuestProgress } from '../models/Quest.js';
-import { User } from '../models/User.js';
+import { QuestProgress } from '../models/Quest';
+import { User } from '../models/User';
 import { EXTENDED_QUESTS_CATALOG } from '@ludo/shared';
 
 export class QuestService {
@@ -7,8 +7,7 @@ export class QuestService {
     let progressList = await QuestProgress.find({ userId });
 
     if (progressList.length === 0) {
-      // Seed initial daily quests for user
-      const initialQuests = EXTENDED_QUESTS_CATALOG.slice(0, 5).map((q) => ({
+      const initialQuests = EXTENDED_QUESTS_CATALOG.slice(0, 5).map((q: any) => ({
         userId,
         questId: q.id,
         currentCount: 0,
@@ -17,7 +16,7 @@ export class QuestService {
         isClaimed: false,
       }));
 
-      progressList = await QuestProgress.insertMany(initialQuests);
+      progressList = (await QuestProgress.insertMany(initialQuests)) as any;
     }
 
     return progressList;
@@ -37,7 +36,7 @@ export class QuestService {
       throw new Error('Quest progress is incomplete');
     }
 
-    const questDef = EXTENDED_QUESTS_CATALOG.find((q) => q.id === questId);
+    const questDef = EXTENDED_QUESTS_CATALOG.find((q: any) => q.id === questId);
     if (!questDef) {
       throw new Error('Quest definition not found');
     }
@@ -46,7 +45,6 @@ export class QuestService {
     questProg.isClaimed = true;
     await questProg.save();
 
-    // Reward player
     const user = await User.findById(userId);
     if (user) {
       user.coins += questDef.reward.coins;

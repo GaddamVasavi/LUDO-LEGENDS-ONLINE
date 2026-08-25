@@ -16,7 +16,7 @@ const RoomSchema = new Schema<IRoom>(
   {
     code: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
-    hostId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    hostId: { type: Schema.Types.Mixed, required: true },
     mode: { type: String, default: 'CLASSIC' },
     isPrivate: { type: Boolean, default: false },
     password: { type: String },

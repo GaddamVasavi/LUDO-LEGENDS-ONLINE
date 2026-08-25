@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { AuthService } from '../services/authService.js';
+import { AuthService } from '../services/authService';
 import { registerSchema, loginSchema } from '@ludo/shared';
-import { AuthRequest } from '../middleware/auth.js';
-import { User } from '../models/User.js';
+import { AuthRequest } from '../middleware/auth';
+import { User } from '../models/User';
 
 export class AuthController {
   public static async register(req: Request, res: Response) {
@@ -16,7 +16,7 @@ export class AuthController {
         data: result,
       });
     } catch (error: any) {
-      return res.status(400).json({ success: false, error: error.message });
+      return res.status(400).json({ success: false, error: error.message || 'Registration failed' });
     }
   }
 
@@ -31,13 +31,13 @@ export class AuthController {
         data: result,
       });
     } catch (error: any) {
-      return res.status(401).json({ success: false, error: error.message });
+      return res.status(401).json({ success: false, error: error.message || 'Login failed' });
     }
   }
 
   public static async me(req: AuthRequest, res: Response) {
     try {
-      const user = await User.findById(req.userId).select('-passwordHash');
+      const user = await AuthService.getUserById(req.userId!);
       if (!user) {
         return res.status(404).json({ success: false, error: 'User not found' });
       }

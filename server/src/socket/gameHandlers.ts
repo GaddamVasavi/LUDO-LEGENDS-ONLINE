@@ -1,7 +1,7 @@
 import { Server, Socket } from 'socket.io';
-import { GameEngine } from '../game/GameEngine.js';
+import { GameEngine } from '../game/GameEngine';
 import { PlayerColor, SOCKET_EVENTS } from '@ludo/shared';
-import { AIEngine } from '../game/AIEngine.js';
+import { AIEngine } from '../game/AIEngine';
 
 export const activeGames: Map<string, GameEngine> = new Map();
 
@@ -27,7 +27,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
 
     socket.join(game.id);
 
-    // Auto-fill bots if game reaches 4 or auto-start for testing
     if (game.players.size === 4 && game.status === 'WAITING') {
       game.startGame();
       io.to(game.id).emit(SOCKET_EVENTS.GAME_STARTED, game.getGameState());
@@ -53,29 +52,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
       consecutiveSixes: game.dice.getConsecutiveSixes(),
       validMoves: result.validMoves,
     });
-
-    // Check if current player is Bot and trigger automated bot move
-    const currentPlayerObj = game.players.get(currentColor);
-    if (currentPlayerObj && currentPlayerObj.player.isBot && result.validMoves.length > 0) {
-      setTimeout(() => {
-        const opponentTokens = Array.from(game.players.entries())
-          .filter(([c]) => c !== currentColor)
-          .flatMap(([, obj]) => obj.tokens);
-
-        const chosenTokenId = AIEngine.chooseMove(
-          currentColor,
-          currentPlayerObj.tokens,
-          opponentTokens,
-          result.value,
-          currentPlayerObj.player.botDifficulty || 'MEDIUM'
-        );
-
-        if (chosenTokenId) {
-          const moveLog = game.moveToken(currentColor, chosenTokenId, result.value);
-          io.to(game.id).emit(SOCKET_EVENTS.TOKEN_MOVED, moveLog, game.getGameState());
-        }
-      }, 1200);
-    }
   });
 
   socket.on(SOCKET_EVENTS.MOVE_TOKEN, ({ gameId, tokenId, diceValue }) => {
@@ -86,14 +62,6 @@ export function registerGameHandlers(io: Server, socket: Socket) {
     try {
       const moveLog = game.moveToken(currentColor, tokenId, diceValue);
       io.to(game.id).emit(SOCKET_EVENTS.TOKEN_MOVED, moveLog, game.getGameState());
-
-      if (game.status === 'FINISHED') {
-        io.to(game.id).emit(SOCKET_EVENTS.GAME_ENDED, {
-          winners: game.winners,
-          statsSummary: {},
-          xpEarned: {},
-        });
-      }
     } catch (err: any) {
       socket.emit(SOCKET_EVENTS.GAME_ERROR, err.message);
     }

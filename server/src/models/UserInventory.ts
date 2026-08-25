@@ -9,7 +9,7 @@ export interface IUserInventory extends Document {
 
 const UserInventorySchema = new Schema<IUserInventory>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    userId: { type: Schema.Types.Mixed, required: true, index: true },
     itemId: { type: String, required: true },
     purchasedAt: { type: Date, default: Date.now },
     isEquipped: { type: Boolean, default: false },
