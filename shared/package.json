@@ -1,0 +1,17 @@
+{
+  "name": "@ludo/shared",
+  "version": "1.0.0",
+  "description": "Shared types, constants, and utilities for LUDO LEGENDS ONLINE",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
