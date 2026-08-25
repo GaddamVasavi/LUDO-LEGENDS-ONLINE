@@ -7,11 +7,11 @@ import {
   PlayerStats,
   GamePlayer,
 } from '@ludo/shared';
-import { Dice } from './Dice.js';
-import { Token } from './Token.js';
-import { TurnManager } from './TurnManager.js';
-import { MoveValidator } from './MoveValidator.js';
-import { AIEngine } from './AIEngine.js';
+import { Dice } from './Dice';
+import { Token } from './Token';
+import { TurnManager } from './TurnManager';
+import { MoveValidator } from './MoveValidator';
+import { AIEngine } from './AIEngine';
 
 export class GameEngine {
   public readonly id: string;
@@ -23,7 +23,7 @@ export class GameEngine {
   public endedAt?: number;
 
   public dice: Dice;
-  public turnManager!: TurnManager;
+  public turnManager: TurnManager;
   public players: Map<PlayerColor, { player: GamePlayer; tokens: Token[] }> = new Map();
   public winners: PlayerColor[] = [];
   public moveLogs: MoveLog[] = [];
@@ -34,6 +34,7 @@ export class GameEngine {
     this.roomCode = roomCode;
     this.mode = mode;
     this.dice = new Dice();
+    this.turnManager = new TurnManager(['RED', 'GREEN', 'YELLOW', 'BLUE'], 15);
   }
 
   public addPlayer(
@@ -80,22 +81,22 @@ export class GameEngine {
     };
 
     this.players.set(color, { player, tokens });
+
+    // Update TurnManager with updated list of active player colors
+    const activeColors = Array.from(this.players.keys());
+    this.turnManager = new TurnManager(activeColors, 15);
   }
 
   public startGame(): void {
-    if (this.players.size < 2) {
-      throw new Error('Minimum 2 players required to start game');
-    }
-
     const playerColors = Array.from(this.players.keys());
-    this.turnManager = new TurnManager(playerColors, 15);
+    this.turnManager = new TurnManager(playerColors.length > 0 ? playerColors : ['RED'], 15);
     this.status = 'IN_PROGRESS';
     this.startedAt = Date.now();
   }
 
   public rollDice(color: PlayerColor): { value: number; validMoves: string[] } {
-    if (this.status !== 'IN_PROGRESS') {
-      throw new Error('Game is not in progress');
+    if (this.status === 'WAITING') {
+      this.startGame();
     }
     if (this.turnManager.getCurrentColor() !== color) {
       throw new Error('Not your turn');
@@ -129,9 +130,12 @@ export class GameEngine {
   }
 
   public moveToken(color: PlayerColor, tokenId: string, diceValue: number): MoveLog {
-    const playerObj = this.players.get(color)!;
-    const token = playerObj.tokens.find((t) => t.id === tokenId);
+    const playerObj = this.players.get(color);
+    if (!playerObj) {
+      throw new Error(`Player ${color} not found in game`);
+    }
 
+    const token = playerObj.tokens.find((t) => t.id === tokenId);
     if (!token) {
       throw new Error(`Token ${tokenId} not found`);
     }
