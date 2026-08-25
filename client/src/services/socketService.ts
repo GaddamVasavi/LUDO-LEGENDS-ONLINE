@@ -6,9 +6,11 @@ class SocketService {
 
   public connect(): Socket<ServerToClientEvents, ClientToServerEvents> {
     if (!this.socket) {
-      this.socket = io({
+      const serverUrl = window.location.protocol + '//' + window.location.hostname + ':5000';
+      this.socket = io(serverUrl, {
         autoConnect: true,
         reconnection: true,
+        transports: ['websocket', 'polling'],
       });
     }
     return this.socket;
