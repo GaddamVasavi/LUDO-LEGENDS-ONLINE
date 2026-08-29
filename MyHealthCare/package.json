@@ -1,0 +1,21 @@
+{
+  "name": "myhealthcare-platform",
+  "version": "1.0.0",
+  "description": "MyHealthCare - Personalized Healthcare Management Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "start": "npm run start --prefix backend",
+    "db:migrate": "npx prisma migrate dev --schema=prisma/schema.prisma",
+    "db:seed": "npx ts-node prisma/seed.ts",
+    "db:generate": "npx prisma generate --schema=prisma/schema.prisma",
+    "test": "npm run test --prefix backend && npm run test --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prisma": "^5.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
